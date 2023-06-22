@@ -13,7 +13,10 @@ import { Public } from './auth.decorator';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { AccessTokenGuard } from './accessToken.guard';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RegisterRespone } from './interfaces/register';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -28,6 +31,10 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   @Public()
   @Post('register')
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+  })
   register(@Body() user: CreateUserDto) {
     return this.authService.register(user);
   }

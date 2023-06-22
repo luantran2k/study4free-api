@@ -11,6 +11,7 @@ export class UsersService {
     return this.prisma.user.create({
       data: {
         ...user,
+        payment: false,
         avatar:
           'https://res.cloudinary.com/dfyxzs4xp/image/upload/v1687404987/study4free/avatar/defaut/ko4j5narqakiodes4zte.png',
         gender: 'man',
