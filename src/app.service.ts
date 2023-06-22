@@ -10,6 +10,6 @@ export class AppService {
   ) {}
 
   getHello() {
-    return this.configService.get('JWT_SECRET');
+    return 'Hello ' + new Date().toLocaleDateString();
   }
 }
