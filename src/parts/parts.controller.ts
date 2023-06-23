@@ -1,3 +1,4 @@
+import { SectionType } from 'src/exams/types/sections.type';
 import {
   Controller,
   Get,
@@ -10,35 +11,44 @@ import {
 import { PartsService } from './parts.service';
 import { CreatePartDto } from './dto/create-part.dto';
 import { UpdatePartDto } from './dto/update-part.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/auth.decorator';
 
 @ApiTags('Parts')
 @Controller('parts')
 export class PartsController {
   constructor(private readonly partsService: PartsService) {}
 
-  @Post()
-  create(@Body() createPartDto: CreatePartDto) {
-    return this.partsService.create(createPartDto);
+  @Post(':section')
+  @ApiParam({
+    name: 'section',
+    required: true,
+    enum: ['Listening', 'Reading', 'Speaking', 'Writing'],
+  })
+  @Public()
+  create(
+    @Param('section') section: SectionType,
+    @Body() createPartDto: CreatePartDto,
+  ) {
+    return this.partsService.create(section, createPartDto);
   }
 
-  @Get()
-  findAll() {
-    return this.partsService.findAll();
+  @Patch(':section/:id')
+  @ApiParam({
+    name: 'section',
+    required: true,
+    enum: ['Listening', 'Reading', 'Speaking', 'Writing'],
+  })
+  update(
+    @Param('section') section: SectionType,
+    @Param('id') id: string,
+    @Body() updatePartDto: UpdatePartDto,
+  ) {
+    return this.partsService.update(id, section, updatePartDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.partsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePartDto: UpdatePartDto) {
-    return this.partsService.update(+id, updatePartDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.partsService.remove(+id);
+  @Delete(':section/:id')
+  remove(@Param('section') section: SectionType, @Param('id') id: string) {
+    return this.partsService.remove(id, section);
   }
 }

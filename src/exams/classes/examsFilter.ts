@@ -2,8 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exam } from '@prisma/client';
 import { Transform } from 'class-transformer';
 import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
+import BaseFilter from 'src/common/classes/BaseFilter';
 
 export class ExamFilter
+  extends BaseFilter
   implements
     Partial<Pick<Exam, 'isNeedPaid' | 'title' | 'type' | 'description'>>
 {
@@ -27,14 +29,4 @@ export class ExamFilter
   @IsOptional()
   @Transform(({ value }) => (value === 'true' ? true : false))
   isNeedPaid?: boolean;
-
-  @ApiProperty({ required: false, default: 0 })
-  @Transform(({ value }) => Number(value))
-  @IsOptional()
-  readonly page?: number = 0;
-
-  @ApiProperty({ required: false, default: 10 })
-  @Transform(({ value }) => Number(value))
-  @IsOptional()
-  readonly quantity?: number = 10;
 }

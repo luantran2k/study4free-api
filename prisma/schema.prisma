@@ -70,6 +70,7 @@ model Exam {
   description   String?
   duration      Int
   type          ExamType
+  tag           String[]
   isNeedPaid    Boolean         @default(false)
   image         String?
   sections      ExamSections?   @relation(fields: [sectionsId], references: [id])
@@ -174,7 +175,7 @@ model SpeakingPart {
   title             String
   description       String?
   image             String?
-  SpeakingSection   SpeakingSection?   @relation(fields: [speakingSectionId], references: [id])
+  speakingSection   SpeakingSection?   @relation(fields: [speakingSectionId], references: [id])
   speakingSectionId String?            @db.ObjectId
   questions         SpeakingQuestion[]
 }
@@ -191,7 +192,7 @@ model SpeakingQuestion {
 model SpeakingAnswer {
   id                 String            @id @default(auto()) @map("_id") @db.ObjectId
   audioAnswer        String
-  SpeakingQuestion   SpeakingQuestion? @relation(fields: [speakingQuestionId], references: [id])
+  speakingQuestion   SpeakingQuestion? @relation(fields: [speakingQuestionId], references: [id])
   speakingQuestionId String?           @db.ObjectId
 }
 
@@ -206,7 +207,7 @@ model WritingPart {
   title            String
   description      String?
   image            String?
-  WritingSection   WritingSection?   @relation(fields: [writingSectionId], references: [id])
+  writingSection   WritingSection?   @relation(fields: [writingSectionId], references: [id])
   writingSectionId String?           @db.ObjectId
   questions        WritingQuestion[]
 }
@@ -215,7 +216,7 @@ model WritingQuestion {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   title         String
   image         String?
-  WritingPart   WritingPart?    @relation(fields: [writingPartId], references: [id])
+  writingPart   WritingPart?    @relation(fields: [writingPartId], references: [id])
   writingPartId String?         @db.ObjectId
   answers       WritingAnswer[]
 }

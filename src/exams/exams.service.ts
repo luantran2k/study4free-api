@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ExamFilter } from './classes/examsFilter';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
+import { SectionType } from './types/sections.type';
 
 @Injectable()
 export class ExamsService {
@@ -12,25 +13,57 @@ export class ExamsService {
   async create(createExamDto: CreateExamDto) {
     const { sections, ...exam } = createExamDto;
 
+    // const sectionsCreated = await Promise.all(
+    //   sections.map(async (section: SectionType) => {
+    //     switch (section) {
+    //       case 'Listening':
+    //         return await this.prisma.listeningSection.create({
+    //           data: {},
+    //         });
+    //       case 'Reading':
+    //         return await this.prisma.readingSection.create({
+    //           data: {},
+    //         });
+    //       case 'Speaking':
+    //         return await this.prisma.speakingSection.create({
+    //           data: {},
+    //         });
+    //       case 'Writing':
+    //         return await this.prisma.writingSection.create({
+    //           data: {},
+    //         });
+    //     }
+    //   }),
+    // );
     const newExam = await this.prisma.exam.create({
-      data: exam,
-    });
-    await Promise.all(
-      sections.map(
-        async (section: 'listening' | 'reading' | 'speaking' | 'writing') => {
-          switch (section) {
-            case 'listening':
-              return this.prisma.listeningSection.create({});
-            case 'reading':
-              return this.prisma.readingSection.create({});
-            case 'speaking':
-              return this.prisma.speakingSection.create({});
-            case 'writing':
-              return this.prisma.writingSection.create({});
-          }
+      data: {
+        ...exam,
+        sections: {
+          create: {
+            listening: sections.includes('Listening')
+              ? {
+                  create: {},
+                }
+              : {},
+            reading: sections.includes('Reading')
+              ? {
+                  create: {},
+                }
+              : {},
+            speaking: sections.includes('Speaking')
+              ? {
+                  create: {},
+                }
+              : {},
+            writing: sections.includes('Writing')
+              ? {
+                  create: {},
+                }
+              : {},
+          },
         },
-      ),
-    );
+      },
+    });
     return newExam;
   }
 
@@ -53,7 +86,67 @@ export class ExamsService {
 
   async findOne(id: string) {
     try {
-      return await this.prisma.exam.findFirst({ where: { id } });
+      return await this.prisma.exam.findFirst({
+        where: { id },
+        include: {
+          sections: {
+            include: {
+              listening: {
+                include: {
+                  parts: {
+                    include: {
+                      questions: {
+                        include: {
+                          answers: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              reading: {
+                include: {
+                  parts: {
+                    include: {
+                      questions: {
+                        include: {
+                          answers: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              speaking: {
+                include: {
+                  parts: {
+                    include: {
+                      questions: {
+                        include: {
+                          answers: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              writing: {
+                include: {
+                  parts: {
+                    include: {
+                      questions: {
+                        include: {
+                          answers: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
     } catch {
       throw new NotFoundException('Exam not found');
     }

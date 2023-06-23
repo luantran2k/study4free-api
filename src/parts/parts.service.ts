@@ -1,26 +1,135 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { CreatePartDto } from './dto/create-part.dto';
 import { UpdatePartDto } from './dto/update-part.dto';
+import { SectionType } from 'src/exams/types/sections.type';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PartsService {
-  create(createPartDto: CreatePartDto) {
-    return 'This action adds a new part';
+  constructor(private readonly prisma: PrismaService) {}
+  create(section: SectionType, createPartDto: CreatePartDto) {
+    const { sectionId, ...part } = createPartDto;
+    switch (section) {
+      case 'Listening':
+        return this.prisma.listeningPart.create({
+          data: {
+            ...part,
+            listeningSection: {
+              connect: {
+                id: sectionId,
+              },
+            },
+          },
+        });
+      case 'Reading':
+        return this.prisma.readingPart.create({
+          data: {
+            ...part,
+            readingSection: {
+              connect: {
+                id: sectionId,
+              },
+            },
+          },
+        });
+      case 'Speaking':
+        return this.prisma.speakingPart.create({
+          data: {
+            ...part,
+            speakingSection: {
+              connect: {
+                id: sectionId,
+              },
+            },
+          },
+        });
+      case 'Writing':
+        return this.prisma.writingPart.create({
+          data: {
+            ...part,
+            writingSection: {
+              connect: {
+                id: sectionId,
+              },
+            },
+          },
+        });
+      default:
+        throw new BadRequestException('Invalid section type');
+    }
   }
 
-  findAll() {
-    return `This action returns all parts`;
+  update(id: string, section: SectionType, updatePartDto: UpdatePartDto) {
+    switch (section) {
+      case 'Listening':
+        this.prisma.listeningPart.update({
+          where: {
+            id,
+          },
+          data: {
+            ...updatePartDto,
+          },
+        });
+      case 'Reading':
+        this.prisma.readingPart.update({
+          where: {
+            id,
+          },
+          data: {
+            ...updatePartDto,
+          },
+        });
+      case 'Speaking':
+        this.prisma.speakingPart.update({
+          where: {
+            id,
+          },
+          data: {
+            ...updatePartDto,
+          },
+        });
+      case 'Writing':
+        this.prisma.writingPart.update({
+          where: {
+            id,
+          },
+          data: {
+            ...updatePartDto,
+          },
+        });
+      default:
+        throw new BadRequestException('Invalid section type');
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} part`;
-  }
-
-  update(id: number, updatePartDto: UpdatePartDto) {
-    return `This action updates a #${id} part`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} part`;
+  remove(id: string, section: SectionType) {
+    switch (section) {
+      case 'Listening':
+        this.prisma.listeningPart.delete({
+          where: {
+            id,
+          },
+        });
+      case 'Reading':
+        this.prisma.readingPart.delete({
+          where: {
+            id,
+          },
+        });
+      case 'Speaking':
+        this.prisma.speakingPart.delete({
+          where: {
+            id,
+          },
+        });
+      case 'Writing':
+        this.prisma.writingPart.delete({
+          where: {
+            id,
+          },
+        });
+      default:
+        throw new BadRequestException('Invalid section type');
+    }
   }
 }

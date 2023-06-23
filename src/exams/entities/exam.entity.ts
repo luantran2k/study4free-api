@@ -31,6 +31,9 @@ export class ExamEntity implements Exam {
   sectionsId: string;
 
   @ApiProperty()
+  tag: string[];
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

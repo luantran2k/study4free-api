@@ -61,7 +61,6 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiNoContentResponse({ description: 'Logged out successfully' })
   logout(@Request() req) {
-    console.log(req.user);
-    return req.user;
+    return this.authService.logout(req.user.sub);
   }
 }

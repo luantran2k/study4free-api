@@ -2,10 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
+import { UserFilter } from './user-filter';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
+
+  findMany({ page, quantity, search }: UserFilter) {
+    return this.prisma.user.findMany({
+      take: quantity,
+      skip: page * quantity,
+      where: {
+        AND: [
+          { username: { contains: search } },
+          { email: { contains: search } },
+        ],
+      },
+    });
+  }
 
   async create(user: CreateUserDto): Promise<User> {
     return this.prisma.user.create({
@@ -30,11 +45,15 @@ export class UsersService {
     });
   }
 
-  async update(id: string, user: Partial<User>) {
+  async update(id: string, user: UpdateUserDto & { refreshToken?: string }) {
     return this.prisma.user.update({
       where: { id },
       data: { ...user },
     });
+  }
+
+  remove(id: string) {
+    return this.prisma.user.delete({ where: { id } });
   }
   async isValidUser({
     username,

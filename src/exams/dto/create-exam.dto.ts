@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exam, ExamType } from '@prisma/client';
 import { IsEnum } from 'class-validator';
+import { SectionType } from '../types/sections.type';
 
 export class CreateExamDto
   implements
@@ -28,7 +29,7 @@ export class CreateExamDto
   @ApiProperty({
     required: true,
     isArray: true,
-    enum: ['listening', 'reading', 'speaking', 'writting'],
+    enum: ['Listening', 'Reading', 'Speaking', 'Writing'],
   })
-  sections: string[];
+  sections: SectionType[];
 }
