@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ExamSections } from '@prisma/client';
 
 export class SectionsEntity implements ExamSections {
+  writingSectionId: string;
   @ApiProperty()
   id: string;
   @ApiProperty()
@@ -10,6 +11,4 @@ export class SectionsEntity implements ExamSections {
   readingSectionId: string;
   @ApiProperty()
   speakingSectionId: string;
-  @ApiProperty()
-  writtingSectionId: string;
 }

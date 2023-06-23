@@ -1,19 +1,45 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exam } from '@prisma/client';
+import { Transform } from 'class-transformer';
+import {
+  IsBoolean,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class ExamFilter
-  implements Pick<Exam, 'isNeedPaid' | 'title' | 'type' | 'description'>
+  implements
+    Partial<Pick<Exam, 'isNeedPaid' | 'title' | 'type' | 'description'>>
 {
-  @ApiProperty()
-  title: string;
-  @ApiProperty()
-  description: string;
-  @ApiProperty()
-  type: string;
-  @ApiProperty()
-  isNeedPaid: boolean;
-  @ApiProperty()
-  page: number;
-  @ApiProperty()
-  quantity: number;
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  title?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  type?: string;
+
+  @ApiProperty({ required: false })
+  @IsBoolean()
+  @IsOptional()
+  isNeedPaid?: boolean;
+
+  @ApiProperty({ required: false, default: 0 })
+  @Transform(({ value }) => Number(value))
+  @IsOptional()
+  page?: number;
+
+  @ApiProperty({ required: false, default: 10 })
+  @Transform(({ value }) => Number(value))
+  @IsOptional()
+  quantity?: number;
 }

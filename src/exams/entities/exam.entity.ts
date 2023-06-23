@@ -2,7 +2,7 @@ import { Exam } from '@prisma/client';
 import { SectionsEntity } from './section.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ExamEnity implements Exam {
+export class ExamEntity implements Exam {
   @ApiProperty()
   id: string;
   @ApiProperty()

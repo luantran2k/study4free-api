@@ -1,20 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
-import { ExamsService } from './exams.service';
-import { CreateExamDto } from './dto/create-exam.dto';
-import { UpdateExamDto } from './dto/update-exam.dto';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/auth.decorator';
 import { ExamFilter } from './classes/examsFilter';
-import { ExamEnity } from './entities/exam.entity';
+import { CreateExamDto } from './dto/create-exam.dto';
+import { UpdateExamDto } from './dto/update-exam.dto';
+import { ExamEntity } from './entities/exam.entity';
+import { ExamsService } from './exams.service';
 
 @ApiTags('Exams')
 @Controller('exams')
@@ -22,6 +23,7 @@ export class ExamsController {
   constructor(private readonly examsService: ExamsService) {}
 
   @Post()
+  @ApiBearerAuth()
   create(@Body() createExamDto: CreateExamDto) {
     return this.examsService.create(createExamDto);
   }
@@ -30,9 +32,12 @@ export class ExamsController {
   @Public()
   @ApiOkResponse({
     isArray: true,
-    type: ExamEnity,
+    type: ExamEntity,
   })
-  findAll(@Query() examFilter: ExamFilter) {
+  findAll(
+    @Query()
+    examFilter: ExamFilter,
+  ) {
     return this.examsService.findAll(examFilter);
   }
 

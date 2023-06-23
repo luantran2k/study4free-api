@@ -51,7 +51,7 @@ model Score {
   listening     Float
   reading       Float
   speaking      Float
-  writting      Float
+  writing       Float
   overall       Float
   UserDoingExam UserDoingExam[]
 }
@@ -63,25 +63,25 @@ model Exam {
   duration      Int
   type          String
   isNeedPaid    Boolean         @default(false)
-  image         String
+  image         String?
   sections      ExamSections?   @relation(fields: [sectionsId], references: [id])
-  sectionsId    String          @db.ObjectId
+  sectionsId    String?         @db.ObjectId
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   UserDoingExam UserDoingExam[]
 }
 
 model ExamSections {
-  id                 String           @id @default(auto()) @map("_id") @db.ObjectId
+  id                 String            @id @default(auto()) @map("_id") @db.ObjectId
   exam               Exam[]
-  listening          ListeningSection @relation(fields: [listeningSectionId], references: [id])
-  listeningSectionId String           @db.ObjectId
-  reading            ReadingSection?  @relation(fields: [readingSectionId], references: [id])
-  readingSectionId   String?          @db.ObjectId
-  speaking           SpeakingSection? @relation(fields: [speakingSectionId], references: [id])
-  speakingSectionId  String?          @db.ObjectId
-  writting           WrittingSection? @relation(fields: [writtingSectionId], references: [id])
-  writtingSectionId  String?          @db.ObjectId
+  listening          ListeningSection? @relation(fields: [listeningSectionId], references: [id])
+  listeningSectionId String?           @db.ObjectId
+  reading            ReadingSection?   @relation(fields: [readingSectionId], references: [id])
+  readingSectionId   String?           @db.ObjectId
+  speaking           SpeakingSection?  @relation(fields: [speakingSectionId], references: [id])
+  speakingSectionId  String?           @db.ObjectId
+  writing            WritingSection?   @relation(fields: [writingSectionId], references: [id])
+  writingSectionId   String?           @db.ObjectId
 }
 
 model ListeningSection {
@@ -187,36 +187,36 @@ model SpeakingAnswer {
   speakingQuestionId String?           @db.ObjectId
 }
 
-model WrittingSection {
+model WritingSection {
   id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  parts        WrittingPart[]
+  parts        WritingPart[]
   examSections ExamSections[]
 }
 
-model WrittingPart {
-  id                String             @id @default(auto()) @map("_id") @db.ObjectId
-  title             String
-  description       String?
-  image             String?
-  WrittingSection   WrittingSection?   @relation(fields: [writtingSectionId], references: [id])
-  writtingSectionId String?            @db.ObjectId
-  questions         WrittingQuestion[]
+model WritingPart {
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
+  title            String
+  description      String?
+  image            String?
+  WritingSection   WritingSection?   @relation(fields: [writingSectionId], references: [id])
+  writingSectionId String?           @db.ObjectId
+  questions        WritingQuestion[]
 }
 
-model WrittingQuestion {
-  id             String           @id @default(auto()) @map("_id") @db.ObjectId
-  title          String
-  image          String?
-  WrittingPart   WrittingPart?    @relation(fields: [writtingPartId], references: [id])
-  writtingPartId String?          @db.ObjectId
-  answers        WrittingAnswer[]
+model WritingQuestion {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  image         String?
+  WritingPart   WritingPart?    @relation(fields: [writingPartId], references: [id])
+  writingPartId String?         @db.ObjectId
+  answers       WritingAnswer[]
 }
 
-model WrittingAnswer {
-  id                 String            @id @default(auto()) @map("_id") @db.ObjectId
-  textAnswer         String
-  WrittingQuestion   WrittingQuestion? @relation(fields: [writtingQuestionId], references: [id])
-  writtingQuestionId String?           @db.ObjectId
+model WritingAnswer {
+  id                String           @id @default(auto()) @map("_id") @db.ObjectId
+  textAnswer        String
+  WritingQuestion   WritingQuestion? @relation(fields: [writingQuestionId], references: [id])
+  writingQuestionId String?          @db.ObjectId
 }
 
 model Collection {
