@@ -39,7 +39,7 @@ model Exam {
   description String?
   duration    Int
   type        String
-  price       Float
+  isNeedPaid  Boolean      @default(false)
   image       String
   sections    ExamSections @relation(fields: [sectionsId], references: [id])
   sectionsId  String       @db.ObjectId

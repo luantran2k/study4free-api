@@ -11,8 +11,10 @@ import {
 import { ExamsService } from './exams.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/auth.decorator';
+import { ExamFilter } from './classes/examsFilter';
+import { ExamEnity } from './entities/exam.entity';
 
 @ApiTags('Exams')
 @Controller('exams')
@@ -26,13 +28,17 @@ export class ExamsController {
 
   @Get()
   @Public()
-  findAll(@Query() filter: { page: number; limit: number }) {
-    return this.examsService.findAll();
+  @ApiOkResponse({
+    isArray: true,
+    type: ExamEnity,
+  })
+  findAll(@Query() examFilter: ExamFilter) {
+    return this.examsService.findAll(examFilter);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.examsService.findOne(+id);
+    return this.examsService.findOne(id);
   }
 
   @Patch(':id')

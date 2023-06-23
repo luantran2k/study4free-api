@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
+import { ExamFilter } from './classes/examsFilter';
 
 @Injectable()
 export class ExamsService {
@@ -10,12 +11,46 @@ export class ExamsService {
     return 'This action adds a new exam';
   }
 
-  findAll() {
-    return this.prisma.exam.findMany();
+  findAll({
+    page,
+    quantity,
+    description,
+    isNeedPaid,
+    title,
+    type,
+  }: ExamFilter) {
+    return this.prisma.exam.findMany({
+      take: quantity,
+      skip: page * quantity,
+      where: {
+        OR: [
+          {
+            title: {
+              contains: title,
+            },
+          },
+          {
+            description: {
+              contains: description,
+            },
+          },
+          {
+            type: {
+              equals: type,
+            },
+          },
+          {
+            isNeedPaid: {
+              equals: isNeedPaid,
+            },
+          },
+        ],
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} exam`;
+  findOne(id: string) {
+    return this.prisma.exam.findFirst({ where: { id } });
   }
 
   update(id: number, updateExamDto: UpdateExamDto) {
