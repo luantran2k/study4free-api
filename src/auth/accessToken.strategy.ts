@@ -22,6 +22,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     if (!user.refreshToken) {
       throw new UnauthorizedException('No refresh token');
     }
+    console.log(payload);
     return { ...payload, roles: user.roles };
   }
 }

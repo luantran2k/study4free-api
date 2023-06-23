@@ -45,6 +45,7 @@ export class AuthService {
     }
     const { refreshToken, ...userInfo } = userValid;
     const tokens = await this.getTokens(userInfo.id, userInfo.username);
+    await this.updateRefreshToken(userInfo.id, tokens.refreshToken);
     return {
       ...userInfo,
       tokens,

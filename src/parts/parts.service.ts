@@ -62,7 +62,7 @@ export class PartsService {
   update(id: string, section: SectionType, updatePartDto: UpdatePartDto) {
     switch (section) {
       case 'Listening':
-        this.prisma.listeningPart.update({
+        return this.prisma.listeningPart.update({
           where: {
             id,
           },
@@ -71,7 +71,7 @@ export class PartsService {
           },
         });
       case 'Reading':
-        this.prisma.readingPart.update({
+        return this.prisma.readingPart.update({
           where: {
             id,
           },
@@ -80,7 +80,7 @@ export class PartsService {
           },
         });
       case 'Speaking':
-        this.prisma.speakingPart.update({
+        return this.prisma.speakingPart.update({
           where: {
             id,
           },
@@ -89,7 +89,7 @@ export class PartsService {
           },
         });
       case 'Writing':
-        this.prisma.writingPart.update({
+        return this.prisma.writingPart.update({
           where: {
             id,
           },
@@ -105,25 +105,25 @@ export class PartsService {
   remove(id: string, section: SectionType) {
     switch (section) {
       case 'Listening':
-        this.prisma.listeningPart.delete({
+        return this.prisma.listeningPart.delete({
           where: {
             id,
           },
         });
       case 'Reading':
-        this.prisma.readingPart.delete({
+        return this.prisma.readingPart.delete({
           where: {
             id,
           },
         });
       case 'Speaking':
-        this.prisma.speakingPart.delete({
+        return this.prisma.speakingPart.delete({
           where: {
             id,
           },
         });
       case 'Writing':
-        this.prisma.writingPart.delete({
+        return this.prisma.writingPart.delete({
           where: {
             id,
           },

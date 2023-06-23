@@ -1,7 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Request } from '@nestjs/common';
 import { AppService } from './app.service';
-import { PrismaService } from './prisma/prisma.service';
 import { Public } from './auth/decorators/auth.decorator';
+import { PrismaService } from './prisma/prisma.service';
 
 @Controller()
 export class AppController {
@@ -12,7 +12,8 @@ export class AppController {
 
   @Public()
   @Get()
-  getHello() {
+  getHello(@Request() req) {
+    console.log(req.user);
     return this.appService.getHello();
   }
 }
