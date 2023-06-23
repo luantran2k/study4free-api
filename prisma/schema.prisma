@@ -11,20 +11,22 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  username     String   @unique
-  role         Role     @default(USER)
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  username     String  @unique
+  role         Role    @default(USER)
   password     String
-  email        String   @unique
+  email        String  @unique
   phone        String?
   refreshToken String?
   avatar       String
   gender       String
-  payment      Boolean  @default(false)
+  payment      Boolean @default(false)
   company      String?
   location     String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  UserDoingExam UserDoingExam[]
 }
 
 enum Role {
@@ -33,18 +35,40 @@ enum Role {
   TEACHER
 }
 
+model UserDoingExam {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String @db.ObjectId
+  exam    Exam   @relation(fields: [examId], references: [id])
+  examId  String @db.ObjectId
+  score   Score  @relation(fields: [scoreId], references: [id])
+  scoreId String @db.ObjectId
+  result  Json
+}
+
+model Score {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  listening     Float
+  reading       Float
+  speaking      Float
+  writting      Float
+  overall       Float
+  UserDoingExam UserDoingExam[]
+}
+
 model Exam {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String?
-  duration    Int
-  type        String
-  isNeedPaid  Boolean      @default(false)
-  image       String
-  sections    ExamSections @relation(fields: [sectionsId], references: [id])
-  sectionsId  String       @db.ObjectId
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String?
+  duration      Int
+  type          String
+  isNeedPaid    Boolean         @default(false)
+  image         String
+  sections      ExamSections?   @relation(fields: [sectionsId], references: [id])
+  sectionsId    String          @db.ObjectId
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  UserDoingExam UserDoingExam[]
 }
 
 model ExamSections {
