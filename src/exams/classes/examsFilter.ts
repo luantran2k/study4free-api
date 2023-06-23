@@ -1,13 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exam } from '@prisma/client';
 import { Transform } from 'class-transformer';
-import {
-  IsBoolean,
-  IsInt,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
 
 export class ExamFilter
   implements
@@ -23,23 +17,24 @@ export class ExamFilter
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ required: false })
-  @IsString()
+  @ApiProperty({ required: false, enum: ['IELTS', 'TOEIC', 'TOEFL', 'CEFR'] })
+  @IsEnum(['IELTS', 'TOEIC', 'TOEFL', 'CEFR'])
   @IsOptional()
-  type?: string;
+  type?: 'IELTS' | 'TOEIC' | 'TOEFL' | 'CEFR';
 
   @ApiProperty({ required: false })
   @IsBoolean()
   @IsOptional()
+  @Transform(({ value }) => (value === 'true' ? true : false))
   isNeedPaid?: boolean;
 
   @ApiProperty({ required: false, default: 0 })
   @Transform(({ value }) => Number(value))
   @IsOptional()
-  page?: number;
+  readonly page?: number = 0;
 
   @ApiProperty({ required: false, default: 10 })
   @Transform(({ value }) => Number(value))
   @IsOptional()
-  quantity?: number;
+  readonly quantity?: number = 10;
 }

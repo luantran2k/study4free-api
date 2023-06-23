@@ -13,7 +13,7 @@ datasource db {
 model User {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   username      String          @unique
-  role          Role            @default(USER)
+  roles         Role[]          @default([USER])
   password      String
   email         String          @unique
   phone         String?
@@ -57,12 +57,19 @@ model Score {
   UserDoingExam UserDoingExam[]
 }
 
+enum ExamType {
+  IELTS
+  TOEIC
+  TOEFL
+  CEFR
+}
+
 model Exam {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   title         String
   description   String?
   duration      Int
-  type          String
+  type          ExamType
   isNeedPaid    Boolean         @default(false)
   image         String?
   sections      ExamSections?   @relation(fields: [sectionsId], references: [id])

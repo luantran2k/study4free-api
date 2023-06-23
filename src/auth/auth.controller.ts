@@ -16,7 +16,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CreateUserDto } from './../users/dto/create-user.dto';
-import { Public } from './auth.decorator';
+import { Public } from './decorators/auth.decorator';
 import { AuthService } from './auth.service';
 import { LoginResponse } from './classes/login';
 import { RegisterRespone } from './classes/register';

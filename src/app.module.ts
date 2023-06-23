@@ -1,17 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { AnswersModule } from './answers/answers.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { UsersModule } from './users/users.module';
-import { APP_GUARD } from '@nestjs/core';
-import { AccessTokenGuard } from './auth/accessToken.guard';
+import { AccessTokenGuard } from './auth/guards/accessToken.guard';
+import { RolesGuard } from './auth/guards/roles.guard';
+import { CollectionsModule } from './collections/collections.module';
 import { ExamsModule } from './exams/exams.module';
 import { PartsModule } from './parts/parts.module';
+import { PrismaModule } from './prisma/prisma.module';
 import { QuestionsModule } from './questions/questions.module';
-import { AnswersModule } from './answers/answers.module';
-import { CollectionsModule } from './collections/collections.module';
+import { UsersModule } from './users/users.module';
 import { VocabulariesModule } from './vocabularies/vocabularies.module';
 
 @Module({
@@ -35,6 +36,10 @@ import { VocabulariesModule } from './vocabularies/vocabularies.module';
     {
       provide: APP_GUARD,
       useClass: AccessTokenGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

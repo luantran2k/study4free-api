@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { ExamType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ExamFilter } from './classes/examsFilter';
 import { CreateExamDto } from './dto/create-exam.dto';
@@ -35,22 +36,45 @@ export class ExamsService {
 
   findAll(examFilter: ExamFilter) {
     const { page, quantity, description, isNeedPaid, title, type } = examFilter;
-    console.log('title', title);
     return this.prisma.exam.findMany({
       take: quantity,
       skip: page * quantity,
+      orderBy: { createdAt: 'desc' },
+      where: {
+        AND: [
+          title ? { title: { contains: title } } : {},
+          description ? { description: { contains: description } } : {},
+          isNeedPaid ? { isNeedPaid: isNeedPaid } : {},
+          type ? { type: { equals: ExamType[type] } } : {},
+        ],
+      },
     });
   }
 
-  findOne(id: string) {
-    return this.prisma.exam.findFirst({ where: { id } });
+  async findOne(id: string) {
+    try {
+      return await this.prisma.exam.findFirst({ where: { id } });
+    } catch {
+      throw new NotFoundException('Exam not found');
+    }
   }
 
-  update(id: number, updateExamDto: UpdateExamDto) {
-    return `This action updates a #${id} exam`;
+  async update(id: string, updateExamDto: UpdateExamDto) {
+    try {
+      return await this.prisma.exam.update({
+        where: { id },
+        data: updateExamDto,
+      });
+    } catch {
+      throw new NotFoundException('Exam updated failed');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} exam`;
+  async remove(id: string) {
+    try {
+      return await this.prisma.exam.delete({ where: { id } });
+    } catch {
+      throw new NotFoundException('Exam not found');
+    }
   }
 }
