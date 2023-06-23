@@ -14,7 +14,7 @@ import { UpdateExamDto } from './dto/update-exam.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/auth.decorator';
 
-@ApiTags('exams')
+@ApiTags('Exams')
 @Controller('exams')
 export class ExamsController {
   constructor(private readonly examsService: ExamsService) {}

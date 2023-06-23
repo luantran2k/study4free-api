@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ExamsService {
@@ -11,13 +11,7 @@ export class ExamsService {
   }
 
   findAll() {
-    return this.prisma.exam.findMany({
-      select: {
-        sections: {
-          include: {},
-        },
-      },
-    });
+    return this.prisma.exam.findMany();
   }
 
   findOne(id: number) {

@@ -8,6 +8,11 @@ import { UsersModule } from './users/users.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from './auth/accessToken.guard';
 import { ExamsModule } from './exams/exams.module';
+import { PartsModule } from './parts/parts.module';
+import { QuestionsModule } from './questions/questions.module';
+import { AnswersModule } from './answers/answers.module';
+import { CollectionsModule } from './collections/collections.module';
+import { VocabulariesModule } from './vocabularies/vocabularies.module';
 
 @Module({
   imports: [
@@ -18,6 +23,11 @@ import { ExamsModule } from './exams/exams.module';
     UsersModule,
     PrismaModule,
     ExamsModule,
+    PartsModule,
+    QuestionsModule,
+    AnswersModule,
+    CollectionsModule,
+    VocabulariesModule,
   ],
   controllers: [AppController],
   providers: [

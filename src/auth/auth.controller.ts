@@ -6,27 +6,23 @@ import {
   HttpStatus,
   Post,
   Request,
-  UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto } from './../users/dto/create-user.dto';
-import { Public } from './auth.decorator';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { AccessTokenGuard } from './accessToken.guard';
 import {
   ApiBearerAuth,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
-  ApiResponse,
   ApiTags,
-  getSchemaPath,
 } from '@nestjs/swagger';
-import { RegisterRespone } from './classes/register';
+import { CreateUserDto } from './../users/dto/create-user.dto';
+import { Public } from './auth.decorator';
+import { AuthService } from './auth.service';
 import { LoginResponse } from './classes/login';
+import { RegisterRespone } from './classes/register';
+import { LoginDto } from './dto/login.dto';
 
-@ApiTags('auth')
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
