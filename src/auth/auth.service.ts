@@ -27,6 +27,9 @@ export class AuthService {
     password: string,
   ): Promise<Omit<User, 'password'> | null> {
     const user = await this.usersService.findOneByUserName(username);
+    if (!user) {
+      return null;
+    }
     const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {
       const { password, ...result } = user;
@@ -37,11 +40,11 @@ export class AuthService {
 
   async login({ username, password }: LoginDto) {
     const userValid = await this.validateUser(username, password);
-    const { refreshToken, ...userInfo } = userValid;
-    const tokens = await this.getTokens(userInfo.id, userInfo.username);
     if (!userValid) {
       throw new UnauthorizedException('Usernam or password is incorrect');
     }
+    const { refreshToken, ...userInfo } = userValid;
+    const tokens = await this.getTokens(userInfo.id, userInfo.username);
     return {
       ...userInfo,
       tokens,

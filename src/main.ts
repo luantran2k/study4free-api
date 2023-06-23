@@ -10,6 +10,7 @@ async function bootstrap() {
     .setTitle('Study4free')
     .setVersion('1.0')
     .addTag('exams')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

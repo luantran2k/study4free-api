@@ -1,8 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { ExamsService } from './exams.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/auth.decorator';
 
+@ApiTags('exams')
 @Controller('exams')
 export class ExamsController {
   constructor(private readonly examsService: ExamsService) {}
@@ -13,7 +25,8 @@ export class ExamsController {
   }
 
   @Get()
-  findAll() {
+  @Public()
+  findAll(@Query() filter: { page: number; limit: number }) {
     return this.examsService.findAll();
   }
 
