@@ -8,12 +8,16 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class PartsService {
   constructor(private readonly prisma: PrismaService) {}
   create(section: SectionType, createPartDto: CreatePartDto) {
-    const { sectionId, ...part } = createPartDto;
+    const { sectionId, audio, type, ...part } = createPartDto;
+
+    console.log(part);
     switch (section) {
       case 'Listening':
         return this.prisma.listeningPart.create({
           data: {
             ...part,
+            audio,
+            type,
             listeningSection: {
               connect: {
                 id: sectionId,
@@ -22,8 +26,10 @@ export class PartsService {
           },
         });
       case 'Reading':
+        console.log('reading');
         return this.prisma.readingPart.create({
           data: {
+            type,
             ...part,
             readingSection: {
               connect: {
@@ -44,6 +50,7 @@ export class PartsService {
           },
         });
       case 'Writing':
+        console.log('writing');
         return this.prisma.writingPart.create({
           data: {
             ...part,

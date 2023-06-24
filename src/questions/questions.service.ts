@@ -12,17 +12,23 @@ export class QuestionsService {
     partId: string,
     createQuestionDto: CreateQuestionDto,
   ) {
+    const { audio, ...question } = createQuestionDto;
     switch (section) {
       case 'Listening':
         return this.prisma.listeningQuestion.create({
           data: {
-            ...createQuestionDto,
+            audio,
+            ...question,
           },
         });
       case 'Reading':
+        this.prisma.readingQuestion
+          .findFirst({ where: { id: partId } })
+          .then((part) => console.log(part));
+
         return this.prisma.readingQuestion.create({
           data: {
-            ...createQuestionDto,
+            ...question,
             readingPart: {
               connect: { id: partId },
             },
@@ -31,7 +37,7 @@ export class QuestionsService {
       case 'Speaking':
         return this.prisma.speakingQuestion.create({
           data: {
-            ...createQuestionDto,
+            ...question,
             speakingPart: {
               connect: { id: partId },
             },
@@ -40,7 +46,7 @@ export class QuestionsService {
       case 'Writing':
         return this.prisma.writingQuestion.create({
           data: {
-            ...createQuestionDto,
+            ...question,
             writingPart: {
               connect: { id: partId },
             },

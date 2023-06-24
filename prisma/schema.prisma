@@ -25,7 +25,7 @@ model User {
   location      String?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-  UserDoingExam UserDoingExam[]
+  userDoingExam UserDoingExam[]
   todos         Todo[]
   collections   Collection[]
 }

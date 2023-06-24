@@ -46,6 +46,21 @@ export class UsersService {
       include: {
         collections: true,
         todos: true,
+        userDoingExam: {
+          include: {
+            exam: {
+              select: {
+                id: true,
+                title: true,
+                image: true,
+                type: true,
+                duration: true,
+                isNeedPaid: true,
+                tag: true,
+              },
+            },
+          },
+        },
       },
     });
   }
