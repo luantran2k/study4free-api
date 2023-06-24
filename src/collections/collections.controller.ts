@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Req,
 } from '@nestjs/common';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
@@ -14,6 +15,7 @@ import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import BaseFilter from 'src/common/classes/BaseFilter';
 import { Public } from 'src/auth/decorators/auth.decorator';
+import { AuthRequestType } from 'src/auth/types/auth-request.type';
 
 @ApiTags('Collections')
 @Controller('collections')
@@ -22,8 +24,11 @@ export class CollectionsController {
   constructor(private readonly collectionsService: CollectionsService) {}
 
   @Post()
-  create(@Body() createCollectionDto: CreateCollectionDto) {
-    return this.collectionsService.create(createCollectionDto);
+  create(
+    @Req() req: AuthRequestType,
+    @Body() createCollectionDto: CreateCollectionDto,
+  ) {
+    return this.collectionsService.create(req.user.sub, createCollectionDto);
   }
 
   @Get()

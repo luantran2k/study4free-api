@@ -14,6 +14,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { QuestionsModule } from './questions/questions.module';
 import { UsersModule } from './users/users.module';
 import { VocabulariesModule } from './vocabularies/vocabularies.module';
+import { TodosModule } from './todos/todos.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { VocabulariesModule } from './vocabularies/vocabularies.module';
     AnswersModule,
     CollectionsModule,
     VocabulariesModule,
+    TodosModule,
   ],
   controllers: [AppController],
   providers: [

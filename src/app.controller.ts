@@ -13,7 +13,6 @@ export class AppController {
   @Public()
   @Get()
   getHello(@Request() req) {
-    console.log(req.user);
     return this.appService.getHello();
   }
 }

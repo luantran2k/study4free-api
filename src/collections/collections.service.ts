@@ -7,9 +7,16 @@ import BaseFilter from 'src/common/classes/BaseFilter';
 @Injectable()
 export class CollectionsService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createCollectionDto: CreateCollectionDto) {
+  create(userId: string, createCollectionDto: CreateCollectionDto) {
     return this.prisma.collection.create({
-      data: createCollectionDto,
+      data: {
+        ...createCollectionDto,
+        User: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
     });
   }
 

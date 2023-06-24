@@ -19,6 +19,13 @@ export class UsersService {
           { email: { contains: search } },
         ],
       },
+      select: {
+        id: true,
+        avatar: true,
+        gender: true,
+        username: true,
+        email: true,
+      },
     });
   }
 
@@ -36,6 +43,10 @@ export class UsersService {
   async findOne(id: string): Promise<User | undefined> {
     return this.prisma.user.findFirst({
       where: { id },
+      include: {
+        collections: true,
+        todos: true,
+      },
     });
   }
 
