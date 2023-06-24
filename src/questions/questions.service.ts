@@ -1,26 +1,116 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { SectionType } from 'src/exams/types/sections.type';
 
 @Injectable()
 export class QuestionsService {
-  create(createQuestionDto: CreateQuestionDto) {
-    return 'This action adds a new question';
+  constructor(private readonly prisma: PrismaService) {}
+  create(
+    section: SectionType,
+    partId: string,
+    createQuestionDto: CreateQuestionDto,
+  ) {
+    switch (section) {
+      case 'Listening':
+        return this.prisma.listeningQuestion.create({
+          data: {
+            ...createQuestionDto,
+          },
+        });
+      case 'Reading':
+        return this.prisma.readingQuestion.create({
+          data: {
+            ...createQuestionDto,
+            readingPart: {
+              connect: { id: partId },
+            },
+          },
+        });
+      case 'Speaking':
+        return this.prisma.speakingQuestion.create({
+          data: {
+            ...createQuestionDto,
+            speakingPart: {
+              connect: { id: partId },
+            },
+          },
+        });
+      case 'Writing':
+        return this.prisma.writingQuestion.create({
+          data: {
+            ...createQuestionDto,
+            writingPart: {
+              connect: { id: partId },
+            },
+          },
+        });
+      default:
+        throw new BadRequestException('Section or part invalid');
+    }
   }
 
-  findAll() {
-    return `This action returns all questions`;
+  update(
+    id: string,
+    section: SectionType,
+    updateQuestionDto: UpdateQuestionDto,
+  ) {
+    switch (section) {
+      case 'Listening':
+        return this.prisma.listeningQuestion.update({
+          where: { id },
+          data: {
+            ...updateQuestionDto,
+          },
+        });
+      case 'Reading':
+        return this.prisma.readingQuestion.update({
+          where: { id },
+          data: {
+            ...updateQuestionDto,
+          },
+        });
+      case 'Speaking':
+        return this.prisma.speakingQuestion.update({
+          where: { id },
+          data: {
+            ...updateQuestionDto,
+          },
+        });
+      case 'Writing':
+        return this.prisma.writingQuestion.update({
+          where: { id },
+          data: {
+            ...updateQuestionDto,
+          },
+        });
+
+      default:
+        throw new BadRequestException('Section or part invalid');
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} question`;
-  }
-
-  update(id: number, updateQuestionDto: UpdateQuestionDto) {
-    return `This action updates a #${id} question`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} question`;
+  remove(id: string, section: SectionType) {
+    switch (section) {
+      case 'Listening':
+        return this.prisma.listeningQuestion.delete({
+          where: { id },
+        });
+      case 'Reading':
+        return this.prisma.readingQuestion.delete({
+          where: { id },
+        });
+      case 'Speaking':
+        return this.prisma.speakingQuestion.delete({
+          where: { id },
+        });
+      case 'Writing':
+        return this.prisma.writingQuestion.delete({
+          where: { id },
+        });
+      default:
+        throw new BadRequestException('Section invalid');
+    }
   }
 }

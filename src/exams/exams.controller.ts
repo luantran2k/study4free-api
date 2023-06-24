@@ -7,7 +7,6 @@ import {
   Patch,
   Post,
   Query,
-  Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
@@ -37,7 +36,6 @@ export class ExamsController {
     isArray: true,
     type: ExamEntity,
   })
-  @ApiBearerAuth()
   findAll(
     @Query()
     examFilter: ExamFilter,

@@ -10,7 +10,7 @@ export type JwtPayload = {
 
 @Injectable()
 export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(private userSevice: UsersService) {
+  constructor(private userService: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: process.env.JWT_ACCESS_SECRET,
@@ -18,11 +18,11 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload) {
-    const user = await this.userSevice.findOneByUserName(payload.username);
+    const user = await this.userService.findOneByUserName(payload.username);
     if (!user.refreshToken) {
       throw new UnauthorizedException('No refresh token');
     }
-    console.log(payload);
+
     return { ...payload, roles: user.roles };
   }
 }
