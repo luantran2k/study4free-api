@@ -1,16 +1,14 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { CreatePartDto } from './dto/create-part.dto';
-import { UpdatePartDto } from './dto/update-part.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { SectionType } from 'src/exams/types/sections.type';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreatePartDto } from './dto/create-part.dto';
+import { UpdatePartDto } from './dto/update-part.dto';
 
 @Injectable()
 export class PartsService {
   constructor(private readonly prisma: PrismaService) {}
   create(section: SectionType, createPartDto: CreatePartDto) {
     const { sectionId, audio, type, ...part } = createPartDto;
-
-    console.log(part);
     switch (section) {
       case 'Listening':
         return this.prisma.listeningPart.create({
@@ -104,6 +102,33 @@ export class PartsService {
             ...updatePartDto,
           },
         });
+      default:
+        throw new BadRequestException('Invalid section type');
+    }
+  }
+
+  findOne(section: SectionType, id: string) {
+    const findCondition = {
+      where: {
+        id,
+      },
+      include: {
+        questions: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    };
+    switch (section) {
+      case 'Listening':
+        return this.prisma.listeningPart.findUnique(findCondition);
+      case 'Reading':
+        return this.prisma.readingPart.findUnique(findCondition);
+      case 'Speaking':
+        return this.prisma.speakingPart.findUnique(findCondition);
+      case 'Writing':
+        return this.prisma.writingPart.findUnique(findCondition);
       default:
         throw new BadRequestException('Invalid section type');
     }

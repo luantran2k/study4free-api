@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   NotFoundException,
   Param,
   Patch,
@@ -34,6 +35,16 @@ export class PartsController {
     @Body() createPartDto: CreatePartDto,
   ) {
     return this.partsService.create(section, createPartDto);
+  }
+
+  @Get(':section/:id')
+  @ApiParam({
+    name: 'section',
+    required: true,
+    enum: ['Listening', 'Reading', 'Speaking', 'Writing'],
+  })
+  findOne(@Param('section') section: SectionType, @Param('id') id: string) {
+    return this.partsService.findOne(section, id);
   }
 
   @Patch(':section/:id')

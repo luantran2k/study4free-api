@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -26,6 +34,16 @@ export class QuestionsController {
     @Body() createQuestionDto: CreateQuestionDto,
   ) {
     return this.questionsService.create(section, partId, createQuestionDto);
+  }
+
+  @ApiParam({
+    name: 'section',
+    required: true,
+    enum: ['Listening', 'Reading', 'Speaking', 'Writing'],
+  })
+  @Get(':section/:id')
+  findOne(@Param('section') section: SectionType, @Param('id') id: string) {
+    return this.questionsService.findOne(id, section);
   }
 
   @ApiParam({

@@ -19,13 +19,12 @@ export class QuestionsService {
           data: {
             audio,
             ...question,
+            listeningPart: {
+              connect: { id: partId },
+            },
           },
         });
       case 'Reading':
-        this.prisma.readingQuestion
-          .findFirst({ where: { id: partId } })
-          .then((part) => console.log(part));
-
         return this.prisma.readingQuestion.create({
           data: {
             ...question,
@@ -57,6 +56,20 @@ export class QuestionsService {
     }
   }
 
+  findOne(id: string, section: SectionType) {
+    switch (section) {
+      case 'Listening':
+        return this.prisma.listeningQuestion.findUnique({ where: { id } });
+      case 'Reading':
+        return this.prisma.readingQuestion.findUnique({ where: { id } });
+      case 'Speaking':
+        return this.prisma.speakingQuestion.findUnique({ where: { id } });
+      case 'Writing':
+        return this.prisma.writingQuestion.findUnique({ where: { id } });
+      default:
+        throw new BadRequestException('Section or part invalid');
+    }
+  }
   update(
     id: string,
     section: SectionType,

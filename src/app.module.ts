@@ -15,6 +15,7 @@ import { QuestionsModule } from './questions/questions.module';
 import { UsersModule } from './users/users.module';
 import { VocabulariesModule } from './vocabularies/vocabularies.module';
 import { TodosModule } from './todos/todos.module';
+import { SectionsModule } from './sections/sections.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TodosModule } from './todos/todos.module';
     CollectionsModule,
     VocabulariesModule,
     TodosModule,
+    SectionsModule,
   ],
   controllers: [AppController],
   providers: [
