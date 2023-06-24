@@ -1,26 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import BaseFilter from 'src/common/classes/BaseFilter';
 
 @Injectable()
 export class CollectionsService {
+  constructor(private readonly prisma: PrismaService) {}
   create(createCollectionDto: CreateCollectionDto) {
-    return 'This action adds a new collection';
+    return this.prisma.collection.create({
+      data: createCollectionDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all collections`;
+  findAll({ page, quantity, search }: BaseFilter) {
+    return this.prisma.collection.findMany({
+      take: quantity,
+      skip: page * quantity,
+      where: {
+        title: {
+          contains: search,
+        },
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} collection`;
+  findOne(id: string) {
+    return this.prisma.collection.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        vocabularies: true,
+      },
+    });
   }
 
-  update(id: number, updateCollectionDto: UpdateCollectionDto) {
-    return `This action updates a #${id} collection`;
+  update(id: string, updateCollectionDto: UpdateCollectionDto) {
+    return this.prisma.collection.update({
+      where: { id },
+      data: updateCollectionDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} collection`;
+  remove(id: string) {
+    return this.prisma.collection.delete({
+      where: { id },
+    });
   }
 }
