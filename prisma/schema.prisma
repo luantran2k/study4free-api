@@ -125,6 +125,7 @@ model ListeningQuestion {
 model ListeningAnswer {
   id                  String             @id @default(auto()) @map("_id") @db.ObjectId
   image               String?
+  audio               String?
   value               String
   listeningQuestion   ListeningQuestion? @relation(fields: [listeningQuestionId], references: [id])
   listeningQuestionId String?            @db.ObjectId
@@ -191,7 +192,7 @@ model SpeakingQuestion {
 
 model SpeakingAnswer {
   id                 String            @id @default(auto()) @map("_id") @db.ObjectId
-  audioAnswer        String
+  value              String
   speakingQuestion   SpeakingQuestion? @relation(fields: [speakingQuestionId], references: [id])
   speakingQuestionId String?           @db.ObjectId
 }
@@ -223,8 +224,8 @@ model WritingQuestion {
 
 model WritingAnswer {
   id                String           @id @default(auto()) @map("_id") @db.ObjectId
-  textAnswer        String
-  WritingQuestion   WritingQuestion? @relation(fields: [writingQuestionId], references: [id])
+  value             String
+  writingQuestion   WritingQuestion? @relation(fields: [writingQuestionId], references: [id])
   writingQuestionId String?          @db.ObjectId
 }
 
