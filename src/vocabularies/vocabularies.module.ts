@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { VocabulariesService } from './vocabularies.service';
+import { PrismaModule } from 'src/prisma/prisma.module';
 import { VocabulariesController } from './vocabularies.controller';
+import { VocabulariesService } from './vocabularies.service';
 
 @Module({
+  imports: [PrismaModule],
   controllers: [VocabulariesController],
-  providers: [VocabulariesService]
+  providers: [VocabulariesService],
 })
 export class VocabulariesModule {}

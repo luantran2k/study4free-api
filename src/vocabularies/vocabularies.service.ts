@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateVocabularyDto } from './dto/create-vocabulary.dto';
 import { UpdateVocabularyDto } from './dto/update-vocabulary.dto';
 
 @Injectable()
 export class VocabulariesService {
+  constructor(private readonly prisma: PrismaService) {}
   create(createVocabularyDto: CreateVocabularyDto) {
-    return 'This action adds a new vocabulary';
+    const { collectionId, ...vocabulary } = createVocabularyDto;
+    return this.prisma.vocabulary.create({
+      data: {
+        ...vocabulary,
+        collection: {
+          connect: {
+            id: collectionId,
+          },
+        },
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all vocabularies`;
+  update(id: string, updateVocabularyDto: UpdateVocabularyDto) {
+    return this.prisma.vocabulary.update({
+      where: {
+        id,
+      },
+      data: updateVocabularyDto,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vocabulary`;
-  }
-
-  update(id: number, updateVocabularyDto: UpdateVocabularyDto) {
-    return `This action updates a #${id} vocabulary`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} vocabulary`;
+  remove(id: string) {
+    return this.prisma.vocabulary.delete({
+      where: { id },
+    });
   }
 }
