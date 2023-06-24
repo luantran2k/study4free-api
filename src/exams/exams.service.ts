@@ -4,7 +4,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ExamFilter } from './classes/examsFilter';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
-import { SectionType } from './types/sections.type';
 
 @Injectable()
 export class ExamsService {
@@ -12,29 +11,6 @@ export class ExamsService {
 
   async create(createExamDto: CreateExamDto) {
     const { sections, ...exam } = createExamDto;
-
-    // const sectionsCreated = await Promise.all(
-    //   sections.map(async (section: SectionType) => {
-    //     switch (section) {
-    //       case 'Listening':
-    //         return await this.prisma.listeningSection.create({
-    //           data: {},
-    //         });
-    //       case 'Reading':
-    //         return await this.prisma.readingSection.create({
-    //           data: {},
-    //         });
-    //       case 'Speaking':
-    //         return await this.prisma.speakingSection.create({
-    //           data: {},
-    //         });
-    //       case 'Writing':
-    //         return await this.prisma.writingSection.create({
-    //           data: {},
-    //         });
-    //     }
-    //   }),
-    // );
     const newExam = await this.prisma.exam.create({
       data: {
         ...exam,
@@ -67,26 +43,30 @@ export class ExamsService {
     return newExam;
   }
 
+  getExamFilter(examFilter: ExamFilter) {
+    const { description, isNeedPaid, title, type } = examFilter;
+    return {
+      AND: [
+        title ? { title: { contains: title } } : {},
+        description ? { description: { contains: description } } : {},
+        isNeedPaid ? { isNeedPaid: isNeedPaid } : {},
+        type ? { type: { equals: ExamType[type] } } : {},
+      ],
+    };
+  }
   findAll(examFilter: ExamFilter) {
-    const { page, quantity, description, isNeedPaid, title, type } = examFilter;
+    const { page, quantity } = examFilter;
     return this.prisma.exam.findMany({
       take: quantity,
       skip: page * quantity,
       orderBy: { createdAt: 'desc' },
-      where: {
-        AND: [
-          title ? { title: { contains: title } } : {},
-          description ? { description: { contains: description } } : {},
-          isNeedPaid ? { isNeedPaid: isNeedPaid } : {},
-          type ? { type: { equals: ExamType[type] } } : {},
-        ],
-      },
+      where: this.getExamFilter(examFilter),
     });
   }
 
   async findOne(id: string) {
     try {
-      return await this.prisma.exam.findFirst({
+      const exam = await this.prisma.exam.findFirst({
         where: { id },
         include: {
           sections: {
@@ -147,6 +127,7 @@ export class ExamsService {
           },
         },
       });
+      return exam;
     } catch {
       throw new NotFoundException('Exam not found');
     }
@@ -169,5 +150,13 @@ export class ExamsService {
     } catch {
       throw new NotFoundException('Exam not found');
     }
+  }
+
+  async countExam(examFilter: ExamFilter) {
+    return {
+      count: await this.prisma.exam.count({
+        where: this.getExamFilter(examFilter),
+      }),
+    };
   }
 }

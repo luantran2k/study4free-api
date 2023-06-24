@@ -44,6 +44,15 @@ export class ExamsController {
   }
 
   @Public()
+  @Get('count')
+  countExam(
+    @Query()
+    examFilter: ExamFilter,
+  ) {
+    return this.examsService.countExam(examFilter);
+  }
+
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.examsService.findOne(id);
@@ -61,5 +70,12 @@ export class ExamsController {
   @ApiBearerAuth()
   remove(@Param('id') id: string) {
     return this.examsService.remove(id);
+  }
+
+  @Post('/result')
+  @ApiBearerAuth()
+  getResult() {
+    return 'Hello';
+    // return this.examsService.getResult();
   }
 }
