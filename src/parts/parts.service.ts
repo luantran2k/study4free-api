@@ -24,7 +24,6 @@ export class PartsService {
           },
         });
       case 'Reading':
-        console.log('reading');
         return this.prisma.readingPart.create({
           data: {
             type,
@@ -48,7 +47,6 @@ export class PartsService {
           },
         });
       case 'Writing':
-        console.log('writing');
         return this.prisma.writingPart.create({
           data: {
             ...part,

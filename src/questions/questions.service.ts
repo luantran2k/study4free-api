@@ -57,15 +57,21 @@ export class QuestionsService {
   }
 
   findOne(id: string, section: SectionType) {
+    const findCondition = {
+      where: { id },
+      include: {
+        answers: true,
+      },
+    };
     switch (section) {
       case 'Listening':
-        return this.prisma.listeningQuestion.findUnique({ where: { id } });
+        return this.prisma.listeningQuestion.findFirst(findCondition);
       case 'Reading':
-        return this.prisma.readingQuestion.findUnique({ where: { id } });
+        return this.prisma.readingQuestion.findFirst(findCondition);
       case 'Speaking':
-        return this.prisma.speakingQuestion.findUnique({ where: { id } });
+        return this.prisma.speakingQuestion.findFirst(findCondition);
       case 'Writing':
-        return this.prisma.writingQuestion.findUnique({ where: { id } });
+        return this.prisma.writingQuestion.findFirst(findCondition);
       default:
         throw new BadRequestException('Section or part invalid');
     }
