@@ -12,4 +12,8 @@ export default class CreateAnswerDto {
   @ApiProperty()
   @IsOptional()
   audio?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  isTrue?: boolean;
 }
