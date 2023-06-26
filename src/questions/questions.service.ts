@@ -105,10 +105,11 @@ export class QuestionsService {
       audioPromise,
       imagePromise,
     ]);
-    if (newAudio && section === 'Listening') {
+
+    if (newAudio?.secure_url && section === 'Listening') {
       updateQuestionDto.audio = newAudio.secure_url;
     }
-    if (newImage) {
+    if (newImage?.secure_url) {
       updateQuestionDto.image = newImage.secure_url;
     }
     switch (section) {
