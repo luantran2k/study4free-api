@@ -3,10 +3,15 @@ import { SectionType } from 'src/exams/types/sections.type';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePartDto } from './dto/create-part.dto';
 import { UpdatePartDto } from './dto/update-part.dto';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { UploadApiResponse, UploadApiErrorResponse } from 'cloudinary';
 
 @Injectable()
 export class PartsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cloudinary: CloudinaryService,
+  ) {}
   create(section: SectionType, createPartDto: CreatePartDto) {
     const { sectionId, audio, type, ...part } = createPartDto;
     switch (section) {
@@ -62,7 +67,36 @@ export class PartsService {
     }
   }
 
-  update(id: string, section: SectionType, updatePartDto: UpdatePartDto) {
+  async update(
+    id: string,
+    section: SectionType,
+    updatePartDto: UpdatePartDto,
+    files: { image?: Express.Multer.File[]; audio?: Express.Multer.File[] },
+  ) {
+    const { audio, image } = files;
+    let audioPromise: UploadApiResponse | UploadApiErrorResponse;
+    let imagePromise: UploadApiResponse | UploadApiErrorResponse;
+    if (audio) {
+      audioPromise = await this.cloudinary.uploadFile(audio[0], {
+        folderName: 'parts/audios',
+      });
+    }
+    if (image) {
+      imagePromise = await this.cloudinary.uploadFile(image[0], {
+        folderName: 'parts/images',
+      });
+    }
+
+    const [newAudio, newImage] = await Promise.all([
+      audioPromise,
+      imagePromise,
+    ]);
+    if (newAudio && section === 'Listening') {
+      updatePartDto.audio = newAudio.secure_url;
+    }
+    if (newImage) {
+      updatePartDto.image = newImage.secure_url;
+    }
     switch (section) {
       case 'Listening':
         return this.prisma.listeningPart.update({

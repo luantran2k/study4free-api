@@ -8,8 +8,11 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { Public } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -17,6 +20,10 @@ import { SectionType } from 'src/exams/types/sections.type';
 import { CreatePartDto } from './dto/create-part.dto';
 import { UpdatePartDto } from './dto/update-part.dto';
 import { PartsService } from './parts.service';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 
 @ApiTags('Parts')
 @Controller('parts')
@@ -38,6 +45,7 @@ export class PartsController {
   }
 
   @Get(':section/:id')
+  @Public()
   @ApiParam({
     name: 'section',
     required: true,
@@ -53,13 +61,21 @@ export class PartsController {
     required: true,
     enum: ['Listening', 'Reading', 'Speaking', 'Writing'],
   })
-  @Public()
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'image', maxCount: 1 },
+      { name: 'audio', maxCount: 1 },
+    ]),
+  )
+  @ApiConsumes('multipart/form-data')
   update(
     @Param('section') section: SectionType,
     @Param('id') id: string,
     @Body() updatePartDto: UpdatePartDto,
+    @UploadedFiles()
+    files: { image?: Express.Multer.File[]; audio?: Express.Multer.File[] },
   ) {
-    return this.partsService.update(id, section, updatePartDto);
+    return this.partsService.update(id, section, updatePartDto, files);
   }
 
   @Delete(':section/:id')

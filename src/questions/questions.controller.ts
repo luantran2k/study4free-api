@@ -6,6 +6,8 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
@@ -14,6 +16,7 @@ import { SectionType } from 'src/exams/types/sections.type';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { QuestionsService } from './questions.service';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Questions')
 @Controller('questions')
@@ -46,18 +49,29 @@ export class QuestionsController {
     return this.questionsService.findOne(id, section);
   }
 
+  @Patch(':section/:id')
   @ApiParam({
     name: 'section',
     required: true,
     enum: ['Listening', 'Reading', 'Speaking', 'Writing'],
   })
-  @Patch(':section/:id')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'image', maxCount: 1 },
+      { name: 'audio', maxCount: 1 },
+    ]),
+  )
   update(
     @Param('section') section: SectionType,
     @Param('id') id: string,
     @Body() updateQuestionDto: UpdateQuestionDto,
+    @UploadedFiles()
+    files: {
+      image?: Express.Multer.File[];
+      audio?: Express.Multer.File[];
+    } = {},
   ) {
-    return this.questionsService.update(id, section, updateQuestionDto);
+    return this.questionsService.update(id, section, updateQuestionDto, files);
   }
 
   @ApiParam({

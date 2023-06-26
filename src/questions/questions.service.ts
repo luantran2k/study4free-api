@@ -1,12 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { SectionType } from 'src/exams/types/sections.type';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { SectionType } from 'src/exams/types/sections.type';
 
 @Injectable()
 export class QuestionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cloudinary: CloudinaryService,
+  ) {}
   create(
     section: SectionType,
     partId: string,
@@ -76,11 +81,36 @@ export class QuestionsService {
         throw new BadRequestException('Section or part invalid');
     }
   }
-  update(
+  async update(
     id: string,
     section: SectionType,
     updateQuestionDto: UpdateQuestionDto,
+    files: { image?: Express.Multer.File[]; audio?: Express.Multer.File[] },
   ) {
+    const { audio, image } = files;
+    let audioPromise: UploadApiResponse | UploadApiErrorResponse;
+    let imagePromise: UploadApiResponse | UploadApiErrorResponse;
+    if (audio) {
+      audioPromise = await this.cloudinary.uploadFile(audio[0], {
+        folderName: 'questions/audios',
+      });
+    }
+    if (image) {
+      imagePromise = await this.cloudinary.uploadFile(image[0], {
+        folderName: 'questions/images',
+      });
+    }
+
+    const [newAudio, newImage] = await Promise.all([
+      audioPromise,
+      imagePromise,
+    ]);
+    if (newAudio && section === 'Listening') {
+      updateQuestionDto.audio = newAudio.secure_url;
+    }
+    if (newImage) {
+      updateQuestionDto.image = newImage.secure_url;
+    }
     switch (section) {
       case 'Listening':
         return this.prisma.listeningQuestion.update({

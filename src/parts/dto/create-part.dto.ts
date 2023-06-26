@@ -9,17 +9,21 @@ export class CreatePartDto {
   @IsOptional()
   description?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: 'file',
+  })
   @IsOptional()
   audio?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: 'file',
+  })
   @IsOptional()
   image?: string;
 
   @ApiProperty()
   @IsOptional()
-  readonly type: string = '';
+  type: string;
 
   @ApiProperty()
   sectionId: string;

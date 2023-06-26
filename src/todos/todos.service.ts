@@ -7,6 +7,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class TodosService {
   constructor(private readonly prisma: PrismaService) {}
   create(userId: string, createTodoDto: CreateTodoDto) {
+    if (createTodoDto.time) {
+      createTodoDto.time = new Date(createTodoDto.time);
+    }
     return this.prisma.todo.create({
       data: {
         ...createTodoDto,
