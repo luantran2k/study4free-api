@@ -1,3 +1,4 @@
+import { CloudinaryService } from './../cloudinary/cloudinary.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -7,7 +8,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cloudinary: CloudinaryService,
+  ) {}
 
   findMany({ page, quantity, search }: UserFilter) {
     return this.prisma.user.findMany({
@@ -33,8 +37,7 @@ export class UsersService {
     return this.prisma.user.create({
       data: {
         ...user,
-        avatar:
-          'https://res.cloudinary.com/dfyxzs4xp/image/upload/v1687404987/study4free/avatar/defaut/ko4j5narqakiodes4zte.png',
+        avatar: await this.getRandomAvatar(),
         gender: 'man',
       },
     });
@@ -107,5 +110,17 @@ export class UsersService {
         message: 'This email is already taken',
       };
     }
+  }
+
+  async getRandomAvatar() {
+    const fileInfo = await this.cloudinary.getAllFileInFolder(
+      'study4free/avatar/defaut',
+      {
+        resourceType: 'image',
+      },
+    );
+    const numberOfFiles = fileInfo.total_count;
+    const randomNumber = Math.floor(Math.random() * numberOfFiles);
+    return fileInfo.resources[randomNumber].url;
   }
 }
