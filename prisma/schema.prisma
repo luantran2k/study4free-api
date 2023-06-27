@@ -116,6 +116,7 @@ model ListeningPart {
 model ListeningQuestion {
   id              String            @id @default(auto()) @map("_id") @db.ObjectId
   title           String
+  description     String?
   image           String?
   audio           String?
   listeningPart   ListeningPart?    @relation(fields: [listeningPartId], references: [id])
@@ -153,6 +154,7 @@ model ReadingPart {
 model ReadingQuestion {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   title         String
+  description   String?
   image         String?
   readingPart   ReadingPart?    @relation(fields: [readingPartId], references: [id])
   readingPartId String?         @db.ObjectId
@@ -187,6 +189,7 @@ model SpeakingPart {
 model SpeakingQuestion {
   id             String           @id @default(auto()) @map("_id") @db.ObjectId
   title          String
+  description    String?
   image          String?
   speakingPart   SpeakingPart?    @relation(fields: [speakingPartId], references: [id])
   speakingPartId String?          @db.ObjectId
@@ -219,6 +222,7 @@ model WritingPart {
 model WritingQuestion {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   title         String
+  description   String?
   image         String?
   writingPart   WritingPart?    @relation(fields: [writingPartId], references: [id])
   writingPartId String?         @db.ObjectId

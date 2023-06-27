@@ -7,6 +7,10 @@ export class CreateQuestionDto {
 
   @ApiProperty()
   @IsOptional()
+  description?: string;
+
+  @ApiProperty()
+  @IsOptional()
   image?: string;
 
   @ApiProperty()
