@@ -23,6 +23,12 @@ export class UsersController {
     return this.usersService.findMany(UserFilter);
   }
 
+  @Public()
+  @Get('count')
+  countUsers(@Query() UserFilter: UserFilter) {
+    return this.usersService.countUsers(UserFilter);
+  }
+
   @Get(':id')
   @Public()
   findOne(@Param('id') id: string) {

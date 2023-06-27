@@ -1,10 +1,10 @@
-import { CloudinaryService } from './../cloudinary/cloudinary.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
-import { UserFilter } from './user-filter';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CloudinaryService } from './../cloudinary/cloudinary.service';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserFilter } from './user-filter';
 
 @Injectable()
 export class UsersService {
@@ -13,12 +13,12 @@ export class UsersService {
     private readonly cloudinary: CloudinaryService,
   ) {}
 
-  findMany({ page, quantity, search }: UserFilter) {
+  findMany({ page = 0, quantity = 10, search = '' }: UserFilter) {
     return this.prisma.user.findMany({
       take: quantity,
       skip: page * quantity,
       where: {
-        AND: [
+        OR: [
           { username: { contains: search } },
           { email: { contains: search } },
         ],
@@ -31,6 +31,18 @@ export class UsersService {
         email: true,
       },
     });
+  }
+  async countUsers({ search = '' }) {
+    return {
+      count: await this.prisma.user.count({
+        where: {
+          OR: [
+            { username: { contains: search } },
+            { email: { contains: search } },
+          ],
+        },
+      }),
+    };
   }
 
   async create(user: CreateUserDto): Promise<User> {
