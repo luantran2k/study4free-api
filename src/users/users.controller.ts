@@ -8,7 +8,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Role } from '@prisma/client';
 import { Public } from 'src/auth/decorators/auth.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserFilter } from './user-filter';
 import { UsersService } from './users.service';
@@ -41,6 +43,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @Roles(Role.ADMIN)
   remove(@Param('id') id: string) {
     this.usersService.remove(id);
   }

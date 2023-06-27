@@ -29,6 +29,7 @@ export class UsersService {
         gender: true,
         username: true,
         email: true,
+        payment: true,
       },
     });
   }
@@ -95,8 +96,8 @@ export class UsersService {
     });
   }
 
-  remove(id: string) {
-    return this.prisma.user.delete({ where: { id } });
+  async remove(id: string) {
+    return await this.prisma.user.delete({ where: { id } });
   }
   async isValidUser({
     username,
