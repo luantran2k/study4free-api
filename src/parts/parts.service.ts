@@ -139,17 +139,23 @@ export class PartsService {
     }
   }
 
-  findOne(section: SectionType, id: string) {
+  findOne(section: SectionType, id: string, detail: boolean) {
     const findCondition = {
       where: {
         id,
       },
       include: {
-        questions: {
-          select: {
-            id: true,
-          },
-        },
+        questions: detail
+          ? {
+              include: {
+                answers: true,
+              },
+            }
+          : {
+              select: {
+                id: true,
+              },
+            },
       },
     };
     switch (section) {
