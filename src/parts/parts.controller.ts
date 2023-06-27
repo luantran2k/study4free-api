@@ -2,16 +2,18 @@ import {
   BadRequestException,
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   NotFoundException,
   Param,
   Patch,
   Post,
-  UploadedFile,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { Public } from 'src/auth/decorators/auth.decorator';
@@ -20,10 +22,6 @@ import { SectionType } from 'src/exams/types/sections.type';
 import { CreatePartDto } from './dto/create-part.dto';
 import { UpdatePartDto } from './dto/update-part.dto';
 import { PartsService } from './parts.service';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-} from '@nestjs/platform-express';
 
 @ApiTags('Parts')
 @Controller('parts')
@@ -51,8 +49,12 @@ export class PartsController {
     required: true,
     enum: ['Listening', 'Reading', 'Speaking', 'Writing'],
   })
-  findOne(@Param('section') section: SectionType, @Param('id') id: string) {
-    return this.partsService.findOne(section, id);
+  findOne(
+    @Param('section') section: SectionType,
+    @Param('id') id: string,
+    @Query('detail', new DefaultValuePipe(false)) detail: boolean,
+  ) {
+    return this.partsService.findOne(section, id, detail);
   }
 
   @Patch(':section/:id')
