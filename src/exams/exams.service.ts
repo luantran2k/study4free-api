@@ -61,6 +61,9 @@ export class ExamsService {
       skip: page * quantity,
       orderBy: { createdAt: 'desc' },
       where: this.getExamFilter(examFilter),
+      include: {
+        sections: true,
+      },
     });
   }
 
