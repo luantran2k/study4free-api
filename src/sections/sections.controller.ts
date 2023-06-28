@@ -2,7 +2,8 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { SectionType } from 'src/exams/types/sections.type';
 import { CreateSectionDto } from './dto/create-section.dto';
 import { SectionsService } from './sections.service';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
+import SectionResponse from './dto/get-result.dto';
 
 @ApiTags('Sections')
 @ApiBearerAuth()
@@ -23,6 +24,11 @@ export class SectionsController {
   @Get(':section/:id')
   findOne(@Param('section') section: SectionType, @Param('id') id: string) {
     return this.sectionsService.findOne(id, section);
+  }
+
+  @Post('result')
+  async getResult(@Body() sectionResponse: SectionResponse) {
+    return this.sectionsService.getResult(sectionResponse);
   }
 
   @ApiParam({

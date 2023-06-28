@@ -9,7 +9,13 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiParam,
+  ApiProperty,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { SectionType } from 'src/exams/types/sections.type';
@@ -61,6 +67,7 @@ export class QuestionsController {
       { name: 'audio', maxCount: 1 },
     ]),
   )
+  @ApiConsumes('multipart/form-data')
   update(
     @Param('section') section: SectionType,
     @Param('id') id: string,

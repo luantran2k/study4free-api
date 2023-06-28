@@ -64,17 +64,7 @@ export class UsersService {
         todos: true,
         userDoingExam: {
           include: {
-            exam: {
-              select: {
-                id: true,
-                title: true,
-                image: true,
-                type: true,
-                duration: true,
-                isNeedPaid: true,
-                tag: true,
-              },
-            },
+            score: true,
           },
         },
       },
