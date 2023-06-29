@@ -20,14 +20,15 @@ export class CollectionsService {
     });
   }
 
-  count({ page, quantity, search }: BaseFilter) {
-    return this.prisma.collection.count({
+  async count({ page, quantity, search }: BaseFilter) {
+    const count = await this.prisma.collection.count({
       where: {
         title: {
           contains: search,
         },
       },
     });
+    return { count };
   }
 
   findAll({ page, quantity, search }: BaseFilter) {
