@@ -75,7 +75,17 @@ export class UsersService {
     });
   }
 
-  update(id: string, user: UpdateUserDto & { refreshToken?: string }) {
+  async update(
+    id: string,
+    user: UpdateUserDto & { refreshToken?: string },
+    avatar?: Express.Multer.File,
+  ) {
+    if (avatar) {
+      const uploadImage = await this.cloudinary.uploadFile(avatar, {
+        folder: 'study4free/avatar',
+      });
+      user.avatar = uploadImage.secure_url;
+    }
     return this.prisma.user.update({
       where: { id },
       data: { ...user },
