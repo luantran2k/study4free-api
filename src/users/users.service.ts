@@ -62,11 +62,7 @@ export class UsersService {
       include: {
         collections: true,
         todos: true,
-        userDoingExam: {
-          include: {
-            score: true,
-          },
-        },
+        userDoingExam: true,
       },
     });
     if (user) return user;

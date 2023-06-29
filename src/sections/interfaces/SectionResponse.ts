@@ -11,6 +11,8 @@ export type QuestionType =
   | 'Summary completion';
 export default interface ISectionResponse {
   id: string;
+  examId: string;
+  title: string;
   section: SectionType; //"Listening" | "Reading" | "Writing" | "Speaking"
   questions: {
     id: string;

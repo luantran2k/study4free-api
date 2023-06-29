@@ -36,26 +36,25 @@ enum Role {
   TEACHER
 }
 
-model UserDoingExam {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String   @db.ObjectId
-  exam      Exam     @relation(fields: [examId], references: [id])
-  examId    String   @db.ObjectId
-  score     Score    @relation(fields: [scoreId], references: [id])
-  scoreId   String   @db.ObjectId
-  result    Json
-  createdAt DateTime @default(now())
+enum Section {
+  Listening
+  Reading
+  Speaking
+  Writing
 }
 
-model Score {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  listening     Float
-  reading       Float
-  speaking      Float
-  writing       Float
-  overall       Float
-  UserDoingExam UserDoingExam[]
+model UserDoingExam {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  user                 User     @relation(fields: [userId], references: [id])
+  userId               String   @db.ObjectId
+  section              Section
+  examId               String   @db.ObjectId
+  title                String?
+  score                Float
+  numberOfTrueQuestion Int
+  totalQuestion        Int
+  createdAt            DateTime @default(now())
+  scoreId              String?  @db.ObjectId
 }
 
 enum ExamType {
@@ -66,19 +65,18 @@ enum ExamType {
 }
 
 model Exam {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  title         String
-  description   String?
-  duration      Int
-  type          ExamType
-  tag           String[]
-  isNeedPaid    Boolean         @default(false)
-  image         String?
-  sections      ExamSections?   @relation(fields: [sectionsId], references: [id])
-  sectionsId    String?         @db.ObjectId
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  UserDoingExam UserDoingExam[]
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  duration    Int
+  type        ExamType
+  tag         String[]
+  isNeedPaid  Boolean       @default(false)
+  image       String?
+  sections    ExamSections? @relation(fields: [sectionsId], references: [id])
+  sectionsId  String?       @db.ObjectId
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 model ExamSections {

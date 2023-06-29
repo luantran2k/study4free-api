@@ -10,6 +10,7 @@ import ISingleChoiceAnswer from 'src/answers/interfaces/singleChoiceAnswer';
 import IGapFillingAnswer from 'src/answers/interfaces/gapFillingAnswer';
 import { SingleChoiceQuestion } from 'src/questions/entities/singleChoice';
 import { GapFillingQuestion } from 'src/questions/entities/gapFilling';
+import { Section } from '@prisma/client';
 
 @Injectable()
 export class SectionsService {
@@ -79,8 +80,8 @@ export class SectionsService {
     }
   }
 
-  async getResult(sectionResponse: SectionResponse) {
-    const { section, questions } = sectionResponse;
+  async getResult(userId: string, sectionResponse: SectionResponse) {
+    const { section, questions, examId, title } = sectionResponse;
 
     const questionsResultPromises = questions.map(async (userQuestion) => {
       let question: {
@@ -153,11 +154,28 @@ export class SectionsService {
 
     const resultArray = await Promise.all(questionsResultPromises);
     const numberOfTrueQuestion = resultArray.filter((result) => result).length;
-    return {
+    const result = {
       numberOfTrueQuestion,
       totalQuestion: questions.length,
       score: this.getIELTSScore(numberOfTrueQuestion, questions.length),
     };
+    console.log(result);
+    if (result.score || result.score === 0) {
+      return this.prisma.userDoingExam.create({
+        data: {
+          ...result,
+          section: section as Section,
+          examId,
+          title,
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
+      });
+    }
+    throw new BadRequestException('Not question is selected');
   }
 
   getIELTSScore(numberOfQuestion: number, total: number) {

@@ -13,6 +13,11 @@ export default class SectionResponse implements ISectionResponse {
   @IsEnum(['Listening', 'Reading', 'Speaking', 'Writing'])
   section: SectionType;
 
+  @ApiProperty()
+  examId: string;
+  @ApiProperty()
+  title: string;
+
   @ApiProperty({ isArray: true })
   questions: QuestionResponse[];
 }

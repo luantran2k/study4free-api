@@ -1,1 +1,3 @@
-export type SectionType = 'Listening' | 'Reading' | 'Writing' | 'Speaking';
+import { Section } from '@prisma/client';
+
+export type SectionType = Section;
