@@ -31,6 +31,12 @@ export class CollectionsController {
     return this.collectionsService.create(req.user.sub, createCollectionDto);
   }
 
+  @Get('count')
+  @Public()
+  count(@Query() collecitonFilter: BaseFilter) {
+    return this.collectionsService.count(collecitonFilter);
+  }
+
   @Get()
   @Public()
   findAll(@Query() collecitonFilter: BaseFilter) {

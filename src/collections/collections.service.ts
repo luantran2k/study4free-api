@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import BaseFilter from 'src/common/classes/BaseFilter';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import BaseFilter from 'src/common/classes/BaseFilter';
 
 @Injectable()
 export class CollectionsService {
@@ -15,6 +15,16 @@ export class CollectionsService {
           connect: {
             id: userId,
           },
+        },
+      },
+    });
+  }
+
+  count({ page, quantity, search }: BaseFilter) {
+    return this.prisma.collection.count({
+      where: {
+        title: {
+          contains: search,
         },
       },
     });
