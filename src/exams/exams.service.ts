@@ -128,6 +128,11 @@ export class ExamsService {
               },
             },
           },
+          _count: {
+            select: {
+              UserDoingExam: true,
+            },
+          },
         },
       });
       return exam;
