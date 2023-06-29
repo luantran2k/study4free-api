@@ -156,6 +156,13 @@ export class SectionsService {
     return {
       numberOfTrueQuestion,
       totalQuestion: questions.length,
+      score: this.getIELTSScore(numberOfTrueQuestion, questions.length),
     };
+  }
+
+  getIELTSScore(numberOfQuestion: number, total: number) {
+    const surPlus = (((numberOfQuestion / total) * 9000) / 100) % 5;
+    const addNumber = surPlus >= 2.5 ? 5 - surPlus : -surPlus;
+    return (((numberOfQuestion / total) * 9000) / 100 + addNumber) / 10;
   }
 }

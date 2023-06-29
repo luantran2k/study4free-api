@@ -14,7 +14,6 @@ export class SingleChoiceQuestion extends Question {
     this.userAnswers = userAnswers;
   }
   validate() {
-    console.log(this.answers, this.userAnswers);
     const answersObj: {
       [key: string]: {
         isTrue: boolean;
