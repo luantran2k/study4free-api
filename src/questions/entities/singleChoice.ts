@@ -14,6 +14,7 @@ export class SingleChoiceQuestion extends Question {
     this.userAnswers = userAnswers;
   }
   validate() {
+    console.log(this.answers, this.userAnswers);
     const answersObj: {
       [key: string]: {
         isTrue: boolean;
@@ -30,7 +31,8 @@ export class SingleChoiceQuestion extends Question {
       {},
     );
     const isTrue = this.userAnswers.every(
-      (answer) => answer.isTrue == answersObj[answer.id].isTrue,
+      (answer) =>
+        Boolean(answer.isTrue) == Boolean(answersObj[answer.id].isTrue),
     );
     return isTrue;
   }

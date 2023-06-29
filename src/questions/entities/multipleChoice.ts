@@ -30,7 +30,8 @@ export class MultipleChoiceQuestion extends Question {
       {},
     );
     const isTrue = this.userAnswers.every(
-      (answer) => answer.isTrue == answersObj[answer.id].isTrue,
+      (answer) =>
+        Boolean(answer.isTrue) == Boolean(answersObj[answer.id].isTrue),
     );
     return isTrue;
   }

@@ -127,7 +127,7 @@ model ListeningQuestion {
 model ListeningAnswer {
   id                  String             @id @default(auto()) @map("_id") @db.ObjectId
   image               String?
-  isTrue              Boolean?
+  isTrue              Boolean?           @default(false)
   audio               String?
   value               String
   listeningQuestion   ListeningQuestion? @relation(fields: [listeningQuestionId], references: [id])
@@ -164,7 +164,7 @@ model ReadingQuestion {
 model ReadingAnswer {
   id                String           @id @default(auto()) @map("_id") @db.ObjectId
   image             String?
-  isTrue            Boolean?
+  isTrue            Boolean?         @default(false)
   value             String
   readingQuestion   ReadingQuestion? @relation(fields: [readingQuestionId], references: [id])
   readingQuestionId String?          @db.ObjectId

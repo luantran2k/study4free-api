@@ -29,7 +29,8 @@ export class GapFillingQuestion extends Question {
       {},
     );
     const isTrue = this.userAnswers.every(
-      (answer) => answer.value == answersObj[answer.id].value,
+      (answer) =>
+        answer.value.toLowerCase() == answersObj[answer.id].value.toLowerCase(),
     );
     return isTrue;
   }

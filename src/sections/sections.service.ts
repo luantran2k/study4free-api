@@ -81,6 +81,7 @@ export class SectionsService {
 
   async getResult(sectionResponse: SectionResponse) {
     const { section, questions } = sectionResponse;
+
     const questionsResultPromises = questions.map(async (userQuestion) => {
       let question: {
         answers:
@@ -96,6 +97,7 @@ export class SectionsService {
               answers: true,
             },
           });
+          break;
         case 'Reading':
           question = await this.prisma.readingQuestion.findFirst({
             where: { id: userQuestion.id },
@@ -103,6 +105,7 @@ export class SectionsService {
               answers: true,
             },
           });
+          break;
         case 'Speaking':
           question = await this.prisma.speakingQuestion.findFirst({
             where: { id: userQuestion.id },
@@ -110,6 +113,7 @@ export class SectionsService {
               answers: true,
             },
           });
+          break;
         case 'Writing':
           question = await this.prisma.writingQuestion.findFirst({
             where: { id: userQuestion.id },
@@ -117,9 +121,12 @@ export class SectionsService {
               answers: true,
             },
           });
+          break;
       }
       if (!question) {
-        throw new BadRequestException('Question not found');
+        throw new BadRequestException(
+          `Question not found ${section} ${userQuestion.id}`,
+        );
       }
       const { id, questionType, answers } = userQuestion;
       switch (questionType) {

@@ -19,6 +19,7 @@ export default interface ISectionResponse {
       id: string;
       value?: string;
       isTrue?: boolean;
+      audio?: string;
     }[];
   }[];
 }
