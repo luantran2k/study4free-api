@@ -25,6 +25,11 @@ export class SectionsController {
     return this.sectionsService.create(createSectionDto);
   }
 
+  @Get('results/:resultId')
+  getResultById(@Param('resultId') resultId: string) {
+    return this.sectionsService.getResultById(resultId);
+  }
+
   @ApiParam({
     name: 'section',
     required: true,

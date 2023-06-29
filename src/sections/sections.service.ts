@@ -183,4 +183,8 @@ export class SectionsService {
     const addNumber = surPlus >= 2.5 ? 5 - surPlus : -surPlus;
     return (((numberOfQuestion / total) * 9000) / 100 + addNumber) / 10;
   }
+
+  getResultById(id: string) {
+    return this.prisma.userDoingExam.findFirst({ where: { id } });
+  }
 }
